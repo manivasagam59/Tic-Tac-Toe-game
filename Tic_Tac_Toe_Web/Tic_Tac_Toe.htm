@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TIC TAC TOE</title>
+    <style>
+        body {
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Consolas, sans-serif, monospace;
+            background-color: #0B2447;
+        }
+
+        #game-view button {
+            width: 70px;
+            height: 70px;
+            padding: 2px;
+            margin: 4px;
+            background-color: #A5D7E8;
+            border: 4px solid #A5D7E8;
+            border-radius: 5px;
+            font-size: 25px;
+            font-weight: 600;
+            box-shadow: 0px 0px 4px #A5D7E8;
+            transition: all 0.2s ease;
+        }
+
+        #game-view button:disabled {
+            background-color: #a5d7e810;
+            color: #a5d7e8;
+            box-shadow: 0px 0px 6px #A5D7E8;
+        }
+
+        #game-view {
+            position: relative;
+        }
+
+        .msg {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: calc(100% + 30px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 350px;
+            height: 80px;
+            font-size: 24px;
+            border: 2px solid #A5D7E8;
+            border-radius: 5px;
+            background-color: #a5d7e810;
+            transition: 0.4s ease;
+            visibility: hidden;
+        }
+
+        .showContent {
+            visibility: visible;
+            color: rgb(159, 255, 159);
+            text-shadow: 0px 0px 8px rgb(0, 156, 0);
+        }
+
+        .drawContent {
+            visibility: visible;
+            color: rgb(255, 158, 158);
+            text-shadow: 0px 0px 8px rgb(255, 0, 0);
+        }
+
+        .restart-btn {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            background-color: #a5d7e810;
+            color: #a5d7e8;
+            box-shadow: 0px 0px 6px #A5D7E8;
+            padding: 6px 15px 5px 15px;
+            border: 2px solid #A5D7E8;
+            border-radius: 5px;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .restart-btn:hover {
+            background-color: #A5D7E8;
+            color: #0B2447;
+            box-shadow: 0px 0px 4px #A5D7E8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-view">
+        <div class="msg" id="game-msg"></div>
+    </div>
+
+    <button class="restart-btn" id="restr">RESTART</button>
+
+    <script>
+
+        var currentPlayer = "X";
+        var nextPlayer = "O";
+        var movesDone = 0;
+        var gArray = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]];
+
+        // Game Initiator class
+        class game {
+            row = 3;
+            column = 3;
+            view = null;
+
+            // create Ui method
+            create() {
+                var table = document.createElement("table");
+                var counts = 1;
+                for (var i = 0; i < this.row; i++) {
+                    var tr = document.createElement("tr");
+                    for (var j = 0; j < this.column; j++) {
+                        var td = document.createElement("td");
+                        var btn = document.createElement("button");
+                        btn.id = "btn_" + counts;
+                        btn.value = i.toString() + j.toString();
+                        btn.addEventListener("click", function () {
+                            setGameArray(this.value);
+                            CheckGameWin(this.id, currentPlayer);
+                            this.innerText = currentPlayer;
+                            var swapSymbol = currentPlayer;
+                            currentPlayer = nextPlayer;
+                            nextPlayer = swapSymbol;
+                            movesDone++;
+                            this.disabled = true;
+                        });
+                        counts++;
+                        td.appendChild(btn);
+                        tr.appendChild(td);
+                    }
+                    table.appendChild(tr);
+                }
+                this.view.appendChild(table);
+            }
+
+            // constructor for class
+            constructor(x) {
+                this.view = document.getElementById(x);
+            }
+
+        }
+
+
+        // Set Value in Game Array
+        function setGameArray(x) {
+            gArray[x[0]][x[1]] = currentPlayer;
+        }
+
+
+        //For Checking Game Status
+        function CheckGameWin(buttonId) {
+            if (buttonId == "btn_1") {
+                if (gArray[0][0] == currentPlayer && gArray[0][1] == currentPlayer && gArray[0][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][0] == currentPlayer && gArray[1][0] == currentPlayer && gArray[2][0] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][0] == currentPlayer && gArray[1][1] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+            }
+            else if (buttonId == "btn_2") {
+                if (gArray[0][0] == currentPlayer && gArray[0][1] == currentPlayer && gArray[0][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][1] == currentPlayer && gArray[1][1] == currentPlayer && gArray[2][1] == currentPlayer) { DisplayWin(currentPlayer); }
+            }
+            else if (buttonId == "btn_3") {
+                if (gArray[0][0] == currentPlayer && gArray[0][1] == currentPlayer && gArray[0][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][2] == currentPlayer && gArray[1][2] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][2] == currentPlayer && gArray[1][1] == currentPlayer && gArray[2][0] == currentPlayer) { DisplayWin(currentPlayer); }
+            }
+            else if (buttonId == "btn_4") {
+                if (gArray[0][0] == currentPlayer && gArray[1][0] == currentPlayer && gArray[2][0] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[1][0] == currentPlayer && gArray[1][1] == currentPlayer && gArray[1][2] == currentPlayer) { DisplayWin(currentPlayer); }
+            }
+            else if (buttonId == "btn_5") {
+                if (gArray[1][0] == currentPlayer && gArray[1][1] == currentPlayer && gArray[1][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][1] == currentPlayer && gArray[1][1] == currentPlayer && gArray[2][1] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][0] == currentPlayer && gArray[1][1] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[2][0] == currentPlayer && gArray[1][1] == currentPlayer && gArray[0][2] == currentPlayer) { DisplayWin(currentPlayer); }
+            }
+            else if (buttonId == "btn_6") {
+                if (gArray[0][2] == currentPlayer && gArray[1][2] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[1][0] == currentPlayer && gArray[1][1] == currentPlayer && gArray[1][2] == currentPlayer) { DisplayWin(currentPlayer) };
+            }
+            else if (buttonId == "btn_7") {
+                if (gArray[2][0] == currentPlayer && gArray[2][1] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][0] == currentPlayer && gArray[1][0] == currentPlayer && gArray[2][0] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][2] == currentPlayer && gArray[1][1] == currentPlayer && gArray[2][0] == currentPlayer) { DisplayWin(currentPlayer); }
+            }
+            else if (buttonId == "btn_8") {
+                if (gArray[0][1] == currentPlayer && gArray[1][1] == currentPlayer && gArray[2][1] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[2][0] == currentPlayer && gArray[2][1] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+            }
+            else if (buttonId == "btn_9") {
+                if (gArray[0][2] == currentPlayer && gArray[1][2] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[2][0] == currentPlayer && gArray[2][1] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+                else if (gArray[0][0] == currentPlayer && gArray[1][1] == currentPlayer && gArray[2][2] == currentPlayer) { DisplayWin(currentPlayer); }
+            }
+
+            if (movesDone == 8) { DisplayDraw(); }
+        }
+
+        function DisplayWin(Player) {
+            document.getElementById("game-msg").classList.add("showContent");
+            document.getElementById("game-msg").innerText = "Player " + Player + " Wins the Game";
+            disableBtns();
+        }
+
+        function DisplayDraw() {
+            document.getElementById("game-msg").classList.add("drawContent");
+            document.getElementById("game-msg").innerText = "Match Draw Retry";
+            disableBtns();
+        }
+
+        function disableBtns() {
+            var btns = document.getElementById("game-view").getElementsByTagName("button");
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].disabled = true;
+            }
+        }
+
+        function restart() {
+            document.getElementById("game-view").innerHTML = "<div class=\"msg\" id=\"game-msg\"></div>";
+            currentPlayer = "X";
+            nextPlayer = "O";
+            movesDone = 0;
+            gArray = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]];
+            var gm = new game("game-view");
+            gm.create();
+        }
+
+        // Ignite Game on open
+        var gm = new game("game-view");
+        gm.create();
+
+        document.getElementById("restr").addEventListener("click", restart);
+
+    </script>
+</body>
+
+</html>
